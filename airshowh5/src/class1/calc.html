@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="buyApp">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+<link rel="stylesheet" type="text/css" href="skin/theme.css"> 
+</head>
+<body ng-controller="buyTicketController">
+<fieldset>
+	<legend>第一個例子:</legend>
+	<b>計算：</b>
+	<br>
+	<br>
+	<table>
+		<tr>
+			<td>單價：（美元）</td>
+			<td>數量:</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="input-group">
+					<input type="number" min="0" max="99" class="form-control" ng-model="cost" required>
+				</div>
+			</td>
+			<td>
+				<div class="input-group">
+					<input type="number" min="0" max="99" class="form-control" ng-model="qty" required>
+					<button class="btn btn-default" ng-click="show()">確認</button>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<b>金額：</b>{{qty * cost | currency}}
+</fieldset>
+<div >
+	<ul class="list-group">
+		<li class="list-group-item row" ng-repeat="item in iddentityIds track by $index" >
+		<div class="form-group">
+			<label for="" class="col-xs-3 control-label">{{$index+1}}身份证号码:</label>
+			<div class="col-xs-8">
+				<div class="input-group col-xs-12">
+					<input type="text" value="{{item}}"  name="iddentityNo" type="number" required class="
+					form-control gui-input " placeholder="身份证号码">
+
+					<input type="text" value="" name="iddentityName" type="text" required class="form-control gui-input " placeholder="姓名">
+
+				<a ng-click="iddentityIds.splice($index,1)"></a>
+				</div>
+			</div>
+		</div>
+		</li>
+	</ul>
+</div>
+<script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<script >
+	angular.module('buyApp',[])
+	.controller('buyTicketController',function($scope){
+		$scope.qty = 0;
+		$scope.identityNo = '';
+		$scope.iddentityIds=[];
+		$scope.$watch($scope.identityNo,function(newValue,oldValue, scope){
+			console.log(newValue);
+		});
+		$scope.$watch('qty',function(newValue,oldValue, scope){
+			if(newValue<0) return false;
+			var length  = $scope.iddentityIds.length;
+			if(newValue > length){
+				for (var i = newValue-length- 1; i >= 0; i--) {
+						$scope.iddentityIds.push($scope.identityNo);
+					}	
+			}else if(newValue < length){
+				//alert(length-newValue);
+				for (var i = (length-newValue)  - 1; i >= 0; i--) {
+					$scope.iddentityIds.splice($scope.iddentityIds.length-1,1);
+				}
+				/*for (var i = length-newValue- 1; i >= 0; i--) {
+						$scope.iddentityIds.splice($scope.identityNo);
+					}*/
+			}
+			
+
+		});
+		$scope.show = function(){ 
+		 
+		}
+		
+	});
+</script>
+</body>
+
+</html>
