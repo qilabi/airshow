@@ -210,6 +210,7 @@
                 </div>
             </div>
         </div>
+        
 
     </div>
     <script src="assets/js/zepto.min.js"></script>
@@ -249,12 +250,14 @@
              processData: false, 
              type:'get',
              success:function(data){
-               alert(data.OpenId);
+                Zepto.toast(data.OpenId);
+
              },
              error:function(XMLHttpRequest, textStatus, errorThrown) {
-               alert(XMLHttpRequest.status);
-               alert(XMLHttpRequest.readyState);
-               alert(textStatus);
+               //alert(XMLHttpRequest.status);
+               //alert(XMLHttpRequest.readyState);
+               //alert(textStatus);
+               alert(XMLHttpRequest.responseText);
              }});
          });
     </script>
