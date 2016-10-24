@@ -240,6 +240,24 @@
                })
             });
         })
+
+
+        $(document).ready(function(){
+         $.ajax({
+            url:'http://www.soyotu.com/OAuth2/Login',
+             dataType:'json',
+             processData: false, 
+             type:'get',
+             success:function(data){
+               alert(data.OpenId);
+             },
+             error:function(XMLHttpRequest, textStatus, errorThrown) {
+               alert(XMLHttpRequest.status);
+               alert(XMLHttpRequest.readyState);
+               alert(textStatus);
+             }});
+         });
+        });
     </script>
 </body>
 
