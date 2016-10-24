@@ -1,0 +1,11 @@
+<div class="cux-modal">
+  <div class="cux-modal__window">
+    <button class="cux-modal__close-button " ng-click="modal.hide()"><i class="cux-icon cux-icon--times"></i></button>
+    <section ng-class="modal.classes">
+        <div ng-include="modal.templateUrl"></div>
+        <!--<template content="modal.template"></template>-->
+        {{modal.template}}
+    </section>
+  </div>
+  <div class="cux-modal__backdrop"></div>
+</div>

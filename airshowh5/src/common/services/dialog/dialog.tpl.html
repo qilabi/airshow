@@ -1,0 +1,14 @@
+<section class="cux-dialog">
+  <header class="cux-dialog__header">
+    <i class="cux-dialog__header-icon cux-icon" ng-class="classes" ng-if="title.icon"></i>
+    <h1 class="cux-dialog__header-title">{{title.label}}</h1>
+  </header>
+  <div class="cux-dialog__content">
+    {{message}}
+  </div>
+  <footer class="cux-dialog__footer">
+    <menu class="cux-button-set">
+      <button class="cux-button cux-button--{{button.cuiType}}" ng-repeat="button in buttons" ng-click="button.action(button.value)">{{button.label}}</button>
+    </menu>
+  </footer>
+</section>

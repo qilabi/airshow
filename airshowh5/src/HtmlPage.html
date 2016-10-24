@@ -1,0 +1,50 @@
+﻿
+<!DOCTYPE html>
+<html lang="en" ng-app="buyApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    
+</head>
+<body ng-controller="buyTicketController">
+    <fieldset>
+        <legend>第一個例子:</legend>
+        <b>数量：</b>
+        <div class="input-group">
+            <input type="number" min="0" max="99" class="form-control numCount" ng-model="qty" required>
+        </div>
+
+    </fieldset>
+    <div class="row">
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="item in iddentityIds">
+                <input type="text" value="" class="form-control col-xs-12">
+                <a ng-click="tasks.splice($index,1)">刪除</a>
+            </li>
+        </ul>
+    </div>
+    <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+    <script>
+        angular.module('buyApp', [])
+            .controller('buyTicketController', function ($scope) {
+                $scope.qty = 0;
+                $scope.iddentityIds =[3,5];
+
+                $scope.$watch('qty', function (newqty) {
+                    var array = [];
+                    alert(newqty);
+                    for (var i = 0; i++; i < newqty) {
+                        alert(i);
+                        array.push(i);
+                        //array.push(JSON.stringify(i));
+                    }
+                    $scope.iddentityIds = array;
+                   
+                });
+
+
+            });
+    </script>
+</body>
+
+</html>

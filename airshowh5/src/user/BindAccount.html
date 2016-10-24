@@ -1,0 +1,48 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>惠卡微商城</title>
+    <link href="../styles/reset.css" rel="stylesheet" />
+    <link href="../styles/account.css" rel="stylesheet" />
+</head>
+<body>
+    <section>
+        <div class="myTeam bgf0">
+            <form class="bgf0">
+                <ul class="dib pct100 tc Identity">
+                    <li class="dib pct100 padd3 "><p class="dib pct90 g9 tl font08">绑定账号：便于您能在正常使用。</p></li>
+                    <li class="dib pct100 bgwh padd3 bbd_e2">
+                        <div class="dib pct90 tl">手&nbsp;&nbsp;机：<input name="" type="text" class="input_form input_form3 bor_none" placeholder="请输入您的手机号码"></div>
+                    </li>
+                    <li class="dib pct100 bgwh padd3 bbd_e2">
+                        <div class="dib pct90 tl">验 证 码：<input name="" type="text" class="input_form2 bor_none" placeholder="请输入验证码"><button class="get_but tc">点击获取</button></div>
+                    </li>
+
+                    <li class="dib pct100 paddt2">
+                        <button class="dib pct90 bgff44 wh vm tc padd6 poi font12 bor_none" style="border-radius:0.5em;">绑定账号</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+        <p class="tc g3 font12 join">您尚未注册加盟，无法绑定账号</p>
+    </section>
+</body>
+<script src="../assets/js/zepto.min.js"></script>
+<script>
+    new function () {
+        var _self = this;
+        _self.width = 640;//设置默认最大宽度
+        _self.fontSize = 100;//默认字体大小
+        _self.widthProportion = function () { var p = (document.body && document.body.clientWidth || document.getElementsByTagName("html")[0].offsetWidth) / _self.width; return p < 0.5 ? 0.5 : p; };
+        _self.changePage = function () {
+            document.getElementsByTagName("html")[0].setAttribute("style", "font-size:" + _self.widthProportion() * _self.fontSize + "px !important");
+        }
+        _self.changePage();
+        window.addEventListener("resize", function () { _self.changePage(); }, false);
+    };
+
+</script>
+
+</html>

@@ -1,0 +1,13 @@
+<div class="drop-down-list">
+    <div class="selected" ng-click="showOptions($event)">
+        {{ngModel.label}}
+    </div>
+    <ul ng-show="isShowOptions">
+        <li ng-click="item.newEvent ? item.newEvent(item.type) : setOption(item, $event)" ng-repeat="item in options">
+            <span>{{item.label}}</span>
+          <span ng-if="!item.newEvent" class="remove" ng-click="deleteOption(item, $event)">
+            <i class="cux-icon cux-icon--remove"></i>
+          </span>
+        </li>
+    </ul>
+</div>

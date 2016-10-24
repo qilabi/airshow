@@ -1,0 +1,13 @@
+<div class="cux-alert cux-alert--{{cuiType}}" ng-if="!isClosed">
+  <i class="cux-alert__icon cux-icon cux-icon--{{_icon}}"></i>
+  <div class="cux-alert__content">
+      <span class="cux-alert__label" ng-if="_label">{{_label}}</span>
+      <span ng-transclude class=cui-message></span>
+  </div>
+
+  <div class="cux-alert__actions">
+     <button class="cux-alert__close" ng-click="close()">
+       <i class="cux-icon cux-icon--times"></i>
+     </button>
+ </div>
+</div>
