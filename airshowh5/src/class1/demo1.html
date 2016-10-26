@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="buyApp"> 
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="skin/theme.css"> 
+</head>
+
+<body ng-controller="buyTicketController">
+	<div class="container">
+	<div class="row">
+			<div class="col-xs-4"></div>
+			<div class="form-group col-xs-8"> 
+			<div class="input-group col-xs-12">
+			<label for="" class="col-xs-3 control-label">{{$index+1}}數量:</label>
+			<div class="col-xs-8">
+				<input type="number" min="1" max="99" placeholder="數量" class="form-control col-xs-10" ng-model="qty" required >
+			<button class="btn btn-default col-xs-2" ng-click="show()">確認</button>
+			</div>
+			</div>
+			 
+		</div>
+	</div>
+	
+	<div class="row">
+	<div class="form-group" >
+    
+    <div class="col-xs-12">
+        <div ng-repeat="identityInfo in fchat.identityInfos">
+            <div class="form-group">
+            	<label for="" class="col-xs-3 control-label">{{$index+1}}身份信息:</label>
+                <div class="col-xs-8">
+                     
+                    <div class="input-group col-md-12">
+                        <input type="text" class="form-control gui-input" ng-model="identityInfo.identityNo"
+                               id="identityNo{{$index + 1}}" placeholder="身份证号码" name="identityNo{{$index + 1}}" />
+                       <input type="text" class="form-control gui-input" ng-model="identityInfo.realName"
+                               id="realName{{$index + 1}}" placeholder="姓名" name="realName{{$index + 1}}" />
+                    </div>
+                    <div class="col-md-2 img-link hide">  
+                            <button class="btn btn-default" ng-click="fchat.incrReply($index)">add</button>
+                            <button class="btn btn-default" ng-click="fchat.decrReply($index)">minus</button>
+                            <button class="btn btn-default" ng-show="!fchat.canDescReply">移除</button> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="replies" name="replies" value="{{fchat.combineReplies()}}" />
+        <input type="hidden" id="realNames" name="realNames" value="{{fchat.combineRealNames()}}" />
+    </div>
+</div>
+</div>
+</div>
+<script>
+	var ftitAppModule = angular.module('buyApp', []);
+
+ftitAppModule.controller('buyTicketController',
+    function ($scope, $log) {
+    	$scope.qty = 1;
+        $scope.fchat = new Object();
+        $scope.fchat.identityInfos = [{key: 0, value: "",identityNo :"",realName:""}];
+        // 初始化时由于只有1条回复，所以不允许删除
+        $scope.fchat.canDescReply = false;
+
+    	$scope.$watch('qty',function(newValue,oldValue, scope){
+    		if(newValue<0) return false;
+			if(newValue == oldValue)return false;
+			var length  = $scope.fchat.identityInfos.length;
+			var index = length;
+			if(newValue > length){
+				for (var i = newValue-length-1; i >= 0; i--) {  
+						$scope.fchat.incrReply(index-1);
+						index++;
+					}	
+			}else if(newValue < length){
+				//alert(length-newValue);
+				for (var i = (length-newValue)  - 1; i >= 0; i--) {
+					//$scope.fchat.identityInfos.splice($scope.ticket.identityInfos.length-1,1);
+					$scope.fchat.decrReply($scope.fchat.identityInfos.length-1);
+				}
+				/*for (var i = length-newValue- 1; i >= 0; i--) {
+						$scope.iddentityIds.splice($scope.identityNo);
+					}*/
+			}
+    	});
+        // 增加回复数
+        $scope.fchat.incrReply = function($index) {
+            $scope.fchat.identityInfos.splice($index + 1, 0,
+                {key: new Date().getTime(), value: "",identityNo :"",realName:""});   // 用时间戳作为每个item的key
+            // 增加新的回复后允许删除
+            $scope.fchat.canDescReply = true;
+        }
+
+        // 减少回复数
+        $scope.fchat.decrReply = function($index) {
+            // 如果回复数大于1，删除被点击回复
+            if ($scope.fchat.identityInfos.length > 1) {
+                $scope.fchat.identityInfos.splice($index, 1);
+            }
+            // 如果回复数为1，不允许删除
+            if ($scope.fchat.identityInfos.length == 1) {
+                $scope.fchat.canDescReply = false;
+            }
+        }
+
+        $scope.fchat.combineReplies = function() {
+            var cr = "";
+            for (var i = 0; i < $scope.fchat.identityInfos.length; i++) {
+                cr += "," + $scope.fchat.identityInfos[i].identityNo;
+            }
+            cr = cr.substring(1);
+            $log.debug("Combined identityNos: " + cr);
+
+            return cr;
+        }
+        $scope.fchat.combineRealNames = function(){
+        	 var cr = "";
+            for (var i = 0; i < $scope.fchat.identityInfos.length; i++) {
+                cr += "#" + $scope.fchat.identityInfos[i].realName;
+            }
+            cr = cr.substring(1);
+            $log.debug("Combined realName: " + cr);
+
+            return cr;
+        }
+    }
+);
+</script>
+</body>
+</html>

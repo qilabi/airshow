@@ -35,54 +35,102 @@
 </fieldset>
 <div >
 	<ul class="list-group">
-		<li class="list-group-item row" ng-repeat="item in iddentityIds track by $index" >
+		<li class="list-group-item row" ng-repeat="item in ticket.identityInfos" >
 		<div class="form-group">
 			<label for="" class="col-xs-3 control-label">{{$index+1}}身份证号码:</label>
 			<div class="col-xs-8">
 				<div class="input-group col-xs-12">
-					<input type="text" value="{{item}}"  name="iddentityNo" type="number" required class="
+					<input type="text" ng-model="{item.identityNo}"  name="iddentityNo{{$index + 1}}" type="number" class="
 					form-control gui-input " placeholder="身份证号码">
 
-					<input type="text" value="" name="iddentityName" type="text" required class="form-control gui-input " placeholder="姓名">
-
-				<a ng-click="iddentityIds.splice($index,1)"></a>
+					<input type="text" ng-model="{item.realName}" name="iddentityName{{$index + 1}}" type="text"  class="form-control gui-input " placeholder="姓名">
+				<button class="btn btn-default" ng-click="ticket.incrReply($index)">add</button>
+				<a ng-click="ticket.identityInfos.splice($index,1)"></a>
 				</div>
 			</div>
 		</div>
 		</li>
 	</ul>
+	<input type="hidden" id="identityInfos" name="identityInfos" value="{{ticket.combineReplies()}}" />
 </div>
 <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
 <script >
 	angular.module('buyApp',[])
-	.controller('buyTicketController',function($scope){
+	.controller('buyTicketController',function($scope,$log){
+		 
 		$scope.qty = 0;
-		$scope.identityNo = '';
-		$scope.iddentityIds=[];
+		//$scope.ticket.identityInfo = {identityNo :"",realName:""};
+		$scope.ticket=new Object();
+		$scope.ticket.identityInfos=new Array();//[{key:0, identityNo:"", realName: ""}];
+		$scope.ticket.canDescReply = true;
+		
+		  // 增加回复数
+         $scope.ticket.incrReply = function($index) {
+             $scope.ticket.identityInfos.splice($index + 1, 0,
+                 {key:new Date().getTime(),identityNo:"", realName: ""});   // 用时间戳作为每个item的key
+             // 增加新的回复后允许删除
+             $scope.ticket.canDescReply = true;
+         }
+ 		/*
+         // 减少回复数
+         $scope.ticket.decrReply = function($index) {
+             // 如果回复数大于1，删除被点击回复
+             if ($scope.ticket.identityInfos.length > 1) {
+                 $scope.ticket.identityInfos.splice($index, 1);
+             }
+             // 如果回复数为1，不允许删除
+             if ($scope.ticket.identityInfos.length == 1) {
+                 $scope.ticket.canDescReply = false;
+             }
+         }*/
+
+          $scope.ticket.combineReplies = function() {
+             var cr = "";
+             /*
+             for (var i = 0; i < $scope.ticket.identityInfos.length; i++) {
+                 cr += "#" + $scope.ticket.identityInfos[i].identityNo;
+             }
+             cr = cr.substring(1);
+             $log.debug("Combined replies: " + cr);
+ 				*/
+             return cr;
+         }
+         /*
 		$scope.$watch($scope.identityNo,function(newValue,oldValue, scope){
 			console.log(newValue);
 		});
+		$scope.$watch('iddentityIds',function(newValue,oldValue, scope){
+			console.log(newValue);
+		});*/
+
 		$scope.$watch('qty',function(newValue,oldValue, scope){
+
 			if(newValue<0) return false;
-			var length  = $scope.iddentityIds.length;
+			if(newValue == oldValue)return false;
+			$scope.ticket.incrReply(0);
+			//$scope.ticket.identityInfos.push({key:new Date().getTime(), identityNo:"", realName: ""});
+			return true;
+			var length  = $scope.ticket.identityInfos.length;
+			var index = length;
 			if(newValue > length){
-				for (var i = newValue-length- 1; i >= 0; i--) {
-						$scope.iddentityIds.push($scope.identityNo);
+				for (var i = newValue-length-1; i >= 0; i--) { 
+						//$scope.ticket.identityInfos.splice(index, 0,{key:new Date().getTime(), identityNo:"", realName: ""});   // 用时间戳作为每个item的key
+						$scope.ticket.identityInfos.push({key:new Date().getTime(), identityNo:"", realName: ""});
+						//$scope.ticket.incrReply(index-1);
+						index++;
 					}	
 			}else if(newValue < length){
 				//alert(length-newValue);
 				for (var i = (length-newValue)  - 1; i >= 0; i--) {
-					$scope.iddentityIds.splice($scope.iddentityIds.length-1,1);
+					$scope.ticket.identityInfos.splice($scope.ticket.identityInfos.length-1,1);
 				}
 				/*for (var i = length-newValue- 1; i >= 0; i--) {
 						$scope.iddentityIds.splice($scope.identityNo);
 					}*/
 			}
-			
-
 		});
-		$scope.show = function(){ 
-		 
+		$scope.show = function(a,b,c){ 
+		 var list= $scope.ticket.combineReplies();
 		}
 		
 	});
