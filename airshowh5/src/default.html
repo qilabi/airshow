@@ -14,7 +14,7 @@
     <meta charset="utf-8" />
 </head>
 <body>
-
+    
     <div class="page">
         <header class="bar bar-nav">
             <h1 class="title">第十一届中国国际航空航天博览会</h1>
@@ -244,17 +244,17 @@
 
         $(document).ready(function(){
          $.ajax({
-            url:'http://www.soyotu.com/OAuth2/Login',
+             url:'http://www.soyotu.com/OAuth2/Login',
              dataType:'json',
-             processData: false, 
+             //processData: false, 
              type:'get',
              success:function(data){
                alert(data.OpenId);
              },
              error:function(XMLHttpRequest, textStatus, errorThrown) {
-               alert(XMLHttpRequest.status);
-               alert(XMLHttpRequest.readyState);
-               alert(textStatus);
+               //alert(XMLHttpRequest.status);
+               //alert(XMLHttpRequest.readyState);
+               //$('body').html(('錯誤::==================='+XMLHttpRequest.responseText)) ;
              }});
          });
     </script>
