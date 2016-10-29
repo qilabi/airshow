@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html ng-app="buyApp">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -12,7 +12,7 @@
     <link href="styles/airshow.css" rel="stylesheet" />
     <meta charset="utf-8" />
 </head>
-<body>
+<body ng-controller="buyTicketController">
     <div class="page">
         <header class="bar bar-nav">
             <a class="button button-link button-nav pull-left back" href="/src/default.html">
@@ -61,68 +61,44 @@
                             </li>
                             <li>
                                 <label>手机号</label>
-                                <input type="tel" data-key="phone" class="item-phone" placeholder="该手机号用于查询订单使用">
+                                <input type="tel" data-key="phone" ng-model="client.phone" class="item-phone" placeholder="该手机号用于查询订单使用">
                             </li>
                             <li>
                                 <label>购买张数</label>
                                 <div class="number">
-                                    <span class="reduce unactive"></span>
-                                    <input type="number" class="ticket-num" value="1" readonly="">
-                                    <span class="increase"></span>
+                                    <span class="reduce unactive" ng-click="ticket.decrReplyQty()"></span>
+                                    <input type="number" class="ticket-num" ng-model="ticket.qty" value="1" readonly="">
+                                    <span class="increase" ng-click="ticket.incrReplyQty()"></span>
                                 </div>
                             </li>
                         </ul>
                     </div>
                     <div class="item-box">
-                        <div class="order-item">
+                        <div class="order-item" ng-repeat="identityInfo in ticket.identityInfos">
                             <ul>
                                 <li style="position: relative;">
                                     <label>出行人</label>
-                                    <input type="text" data-key="name" class="item-name" placeholder="请填写联系人姓名">
+                                    <input type="text" data-key="name" class="item-name" placeholder="请填写联系人姓名" ng-model="identityInfo.realName"  id="identityNo{{$index + 1}}"  name="realName{{$index + 1}}" >
                                 </li>
                                 <li class="multiselect">
                                     <label>身份证</label>
-                                    <input type="text" data-key="id_card" class="item-multiselect" placeholder="请输入身份证">
+                                    <input type="text" data-key="id_card" class="item-multiselect" ng-model="identityInfo.identityNo"  id="identityNo{{$index + 1}}"  name="identityNo{{$index + 1}}"  placeholder="请输入身份证">
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <div class="item-box">
-                        <div class="order-item">
-                            <ul>
-                                <li style="position: relative;">
-                                    <label>出行人</label>
-                                    <input type="text" data-key="name" class="item-name" placeholder="请填写联系人姓名">
-                                </li>
-                                <li class="multiselect">
-                                    <label>身份证</label>
-                                    <input type="text" data-key="id_card" class="item-multiselect" placeholder="请输入身份证">
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="item-box">
-                        <div class="order-item">
-                            <ul>
-                                <li style="position:relative;">
-                                    <label>出行人</label>
-                                    <input type="text" data-key="name" class="item-name" placeholder="请填写联系人姓名">
-                                </li>
-                                <li class="multiselect">
-                                    <label>身份证</label>
-                                    <input type="text" data-key="id_card" class="item-multiselect" placeholder="请输入身份证">
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+             
                 </div>
                 <div class="ft">
                     <div class="price">
-                        <label>订单总额：</label>
+                    <input type="hidden" id="replies" name="replies" value="{{ticket.combineReplies()}}" />
+                    <input type="hidden" id="realNames" name="realNames" value="{{ticket.combineRealNames()}}" />
+                    <input type="hidden" id="unitPrice" name="unitPrice" ng-model="ticket.unitPrice"/>
+                        <label>订单总额：{{ticket.qty * ticket.unitPrice}}</label>
                         <span></span>
                     </div>
                     <div class="submit">
-                        <a href="javascript:;">去支付</a>
+                        <a href="javascript:;" ng-click="ticket.pay()">去支付</a>
                     </div>
                 </div>
                 <div class="flow-shadow">
@@ -136,12 +112,112 @@
     <script src="assets/js/zepto.min.js"></script>
     <script src="assets/js/sm.min.js"></script>
 <script src="assets/js/sm-extend.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
 <script>
     $("#date-input").calendar({
          value: ['2016-11-04'],
         minDate: '2016-11-03',
         maxDate:'2016-11-06'
     });
+</script>
+<script>
+    var ftitAppModule = angular.module('buyApp', []);
+
+ftitAppModule.controller('buyTicketController',
+    function ($scope, $log) {
+        $scope.ticket = new Object();
+        $scope.client =new Object();
+        $scope.ticket.qty = 1;
+        $scope.ticket.unitPrice = 550;
+
+        $scope.client.phone ="";
+        
+        $scope.ticket.identityInfos = [{key: 0, value: "",identityNo :"",realName:""}];
+        // 初始化时由于只有1条身份证信息，所以不允许删除
+        $scope.ticket.canDescReply = false;
+
+        $scope.$watch('ticket.qty',function(newValue,oldValue, scope){
+            if(newValue<0) return false;
+            if(newValue == oldValue)return false;
+            var length  = $scope.ticket.identityInfos.length;
+            var index = length;
+            if(newValue > length){
+                for (var i = newValue-length-1; i >= 0; i--) {  
+                        $scope.ticket.incrReply(index-1);
+                        index++;
+                    }   
+            }else if(newValue < length){
+                for (var i = (length-newValue)  - 1; i >= 0; i--) {
+                    
+                    $scope.ticket.decrReply($scope.ticket.identityInfos.length-1);
+                } 
+            }
+        });
+        //++
+        $scope.ticket.incrReplyQty = function(){
+                $scope.ticket.qty ++;
+        }
+        //--
+        $scope.ticket.decrReplyQty = function(){
+            if($scope.ticket.qty <= 1)return;
+         $scope.ticket.qty --;   
+        }
+        // 增加购买者身份信息数量
+        $scope.ticket.incrReply = function($index) {
+            if(!$index)
+                $index = $scope.ticket.identityInfos.length-1;
+            $scope.ticket.identityInfos.splice($index + 1, 0,
+                {key: new Date().getTime(), value: "",identityNo :"",realName:""});   // 用时间戳作为每个item的key
+            // 增加新的购买者身份信息后允许删除
+            $scope.ticket.canDescReply = true;
+        }
+
+        // 减少购买者身份信息数量
+        $scope.ticket.decrReply = function($index) {
+            if(!$index)
+                $index = $scope.ticket.identityInfos.length-1;
+
+            // 如果回复数大于1，删除被点击回复
+            if ($scope.ticket.identityInfos.length > 1) {
+                $scope.ticket.identityInfos.splice($index, 1);
+            }
+            // 如果购买数为1，不允许删除
+            if ($scope.ticket.identityInfos.length == 1) {
+                $scope.ticket.canDescReply = false;
+            }
+        }
+
+        $scope.ticket.combineReplies = function() {
+            var cr = "";
+            for (var i = 0; i < $scope.ticket.identityInfos.length; i++) {
+                cr += "," + $scope.ticket.identityInfos[i].identityNo;
+            }
+            cr = cr.substring(1);
+            $log.debug("Combined identityNos: " + cr);
+
+            return cr;
+        }
+        $scope.ticket.combineRealNames = function(){
+             var cr = "";
+            for (var i = 0; i < $scope.ticket.identityInfos.length; i++) {
+                cr += "," + $scope.ticket.identityInfos[i].realName;
+            }
+            cr = cr.substring(1);
+            $log.debug("Combined realName: " + cr);
+            return cr;
+        }
+
+        $scope.ticket.pay = function(){
+        var identitys = $scope.ticket.combineReplies();
+        var names = $scope.ticket.combineReplies();
+        var phone = $scope.client.phone;
+        var quantity = $scope.ticket.qty;
+        var unitPrice = $scope.ticket.unitPrice;
+         $log.debug(identitys +":"+names +'::'+ phone);
+        }
+
+    }
+);
 </script>
 </body>
 </html>
