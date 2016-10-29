@@ -475,6 +475,9 @@ img {
     vertical-align: middle;
     padding: 0 5px 0 0;
 }
+.order-infor{
+    font-size: 14px;
+}
 .order-infor .bd {
     padding: 0 0 60px;
 }
