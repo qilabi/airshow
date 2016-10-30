@@ -57,7 +57,7 @@
                         <ul>
                             <li class="play-date">
                                 <label>使用日期</label>
-                                <input type="text" data-toggle='date' id="date-input" readonly="readonly" value="2016-11-04" />
+                                <input type="text" data-toggle='date' id="date-input" ng-model="ticket.date" readonly="readonly" />
                             </li>
                             <li>
                                 <label>手机号</label>
@@ -129,6 +129,7 @@ ftitAppModule.controller('buyTicketController',
         $scope.client =new Object();
         $scope.ticket.qty = 1;
         $scope.ticket.unitPrice = 550;
+        $scope.ticket.date = '2016-11-04'
 
         $scope.client.phone ="";
         
